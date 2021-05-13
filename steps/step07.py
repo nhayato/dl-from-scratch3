@@ -12,6 +12,13 @@ class Variable:
     def set_creator(self, func):
         self.creator = func
 
+    def backward(self):
+        f = self.creator  # 1. 関数を取得
+        if f is not None:
+            x = f.input  # 2. 関数の入力を取得
+            x.grad = f.backward(self.grad)  # 3. 関数のbackwardメソッドを呼ぶ
+            x.backward()  # 自分より1つ前の変数のbackwardを呼ぶ（再起）
+
 
 class Function:
     def __call__(self, input):
@@ -80,19 +87,9 @@ def main():
     assert y.creator.input.creator.input.creator == A
     assert y.creator.input.creator.input.creator.input == x
 
+    # 逆伝播
     y.grad = np.array(1.0)
-
-    C = y.creator  # 1. 関数を取得
-    b = C.input  # 2. 関数の入力を取得
-    b.grad = C.backward(y.grad)  # 3. 関数のbackwardメソッド
-
-    B = b.creator  # 1. 関数を取得
-    a = B.input  # 2. 関数の入力を取得
-    a.grad = B.backward(b.grad)  # 3. 関数のbackwardメソッド
-
-    A = a.creator  # 1. 関数を取得
-    x = A.input  # 2. 関数の入力を取得
-    x.grad = A.backward(a.grad)  # 3. 関数のbackwardメソッド
+    y.backward()
     print(x.grad)
 
 
