@@ -80,6 +80,21 @@ def main():
     assert y.creator.input.creator.input.creator == A
     assert y.creator.input.creator.input.creator.input == x
 
+    y.grad = np.array(1.0)
+
+    C = y.creator  # 1. 関数を取得
+    b = C.input  # 2. 関数の入力を取得
+    b.grad = C.backward(y.grad)  # 3. 関数のbackwardメソッド
+
+    B = b.creator  # 1. 関数を取得
+    a = B.input  # 2. 関数の入力を取得
+    a.grad = B.backward(b.grad)  # 3. 関数のbackwardメソッド
+
+    A = a.creator  # 1. 関数を取得
+    x = A.input  # 2. 関数の入力を取得
+    x.grad = A.backward(a.grad)  # 3. 関数のbackwardメソッド
+    print(x.grad)
+
 
 if __name__ == '__main__':
     main()
