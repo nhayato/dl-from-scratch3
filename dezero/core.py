@@ -141,10 +141,10 @@ class Function:
 
         return outputs if len(outputs) > 1 else outputs[0]
 
-    def forward(self, xs):
+    def forward(self, x):
         raise NotImplementedError()
 
-    def backward(self, gys):
+    def backward(self, gy):
         raise NotImplementedError()
 
 
